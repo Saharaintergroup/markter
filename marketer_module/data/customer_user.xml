@@ -1,0 +1,6 @@
+<odoo noupdate="1">
+    <record id="application_user" model="res.users">
+        <field name="name">دعم العلاج</field>
+        <field name="treatment">True</field>
+    </record>
+</odoo>
