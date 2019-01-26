@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+customer_complians,access customer,model_mar_partner_complians,,base.group_user,1,1,1,1
+customer_visit,customer visit,model_customer_visits,,base.group_user,1,1,1,1

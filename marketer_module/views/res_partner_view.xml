@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="inherited_res_partner_view">
+            <field name="name">res.partner</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//page[3]" position="after">
+                <page string="Custmor Location">
+                		<group>
+                            <field name="longtuide" />
+                            <field name="latutiate"/>
+                            <field name="password" password="True"/>
+                		</group>
+                </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
