@@ -26,6 +26,11 @@ class WebFormController(http.Controller):
     )
 
 
+    def hash(password):
+        password = hashlib.md5()
+        password.hexdigest()
+        return password
+
     @http.route('/check_login/<string:user_name>/<string:password>/<string:model>', type='http', auth='public', csrf=False)
     def check_login(self,user_name,password,model,**args):
         # default_crypt_contex = CryptContext(['pbkdf2_sha512', 'md5_crypt'],deprecated=['md5_crypt'],)
@@ -33,13 +38,26 @@ class WebFormController(http.Controller):
         # get object 
         target=request.env[model]
         # check user name
-        user=target.search([('login','=',user_name)])
+        user=target.search([('name','=',user_name),('password','=',password)])
         result=False
         if user:
             result=True
         return str(result)
-
-
+    
+    @http.route('/customer_login/<string:email>/<string:password>',type='http', auth='public', csrf=False)
+    def customer_login(self, email, password,**args):
+      
+      target=request.env['res.partner']
+      password = hash(hash)
+      user = target.search([
+        ('email','=',email)
+      ])
+      Success = "Success :"+str(user.password)
+      Failure = "Failure :"+ str(password)
+      if user:
+        return Success
+      else:
+        return Failure
 
     @http.route('/marketer_orders/<int:user_id>/', type='http', auth='public', csrf=False)
     def marketer_orders_details(self,user_id,**args):

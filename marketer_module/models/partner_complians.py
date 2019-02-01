@@ -30,7 +30,7 @@ class res_parter(models.Model):
     partner_id=fields.Many2one("res.partner",string="partner")
     discribtion=fields.Char(string="discribtion")
     date=fields.Datetime(string="Date time")
-    user_id = fields.Many2one('res.users', string="Marketer")
+
 class Visit(models.Model):
     _name = 'customer.visits'
 
@@ -38,4 +38,3 @@ class Visit(models.Model):
     discription=fields.Char(string="discription")
     address = fields.Char(related='partner_id.street',store=True)
     phone_number = fields.Char(related='partner_id.phone', store=True)
-    user_id = fields.Many2one('res.users', string="Marketer")
