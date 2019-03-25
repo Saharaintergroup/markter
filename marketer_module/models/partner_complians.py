@@ -25,11 +25,12 @@ from lxml import etree
 from odoo.tools.translate import _
 
 class res_parter(models.Model):
-    _name = 'mar.partner.complians'
+    _name = 'partner.complians'
 
     partner_id=fields.Many2one("res.partner",string="partner")
-    discribtion=fields.Char(string="discribtion")
+    discribtion=fields.Text(string="discribtion")
     date=fields.Datetime(string="Date time")
+    user_id = fields.Many2one("res.users",string="user")
 
 class Visit(models.Model):
     _name = 'customer.visits'
@@ -38,3 +39,4 @@ class Visit(models.Model):
     discription=fields.Char(string="discription")
     address = fields.Char(related='partner_id.street',store=True)
     phone_number = fields.Char(related='partner_id.phone', store=True)
+    user_id = fields.Many2one("res.users",string="user")

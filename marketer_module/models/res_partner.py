@@ -29,21 +29,31 @@ import hashlib
 USER_PRIVATE_FIELDS = []
 
 
-class res_parter(models.Model):
+class Customer(models.Model):
     _inherit = 'res.partner'
 
-    longtuide=fields.Char(string="longtuide")
-    latutiate=fields.Char(string="latutiate")
-    password = fields.Char()
+    longtude = fields.Float()
+    lutude = fields.Float()
+    gaith = fields.Char(default="123")
+    persone_type = fields.Selection([
+        ('customer','Customer'),
+        ('prospect','Prospect'),
+        ('delivery','Delivery')
+    ],default='prospect')
 
-    # overwrite create function 
+
+class UsesMarketer(models.Model):
+    _inherit = 'res.users'
+
     @api.model
-    def create(self, vals):
-        vals['password'] = hash(vals['password'])
-        return super(res_parter, self).create(vals)
- 
-    # the hashing function 
-    def hash(password):
-        password = hashlib.md5()
-        password.hexdigest()
-        return password
+    def search_read(self, domain=None, fields=None, offset=0,limit=None, order=None):
+        if self._context.get('is_portal') == True:
+            domain = [('groups_id','=',9)]
+        res = super(UsesMarketer, self).search_read(domain, fields, offset, limit, order)
+        return res
+    
+    @api.model
+    def create(self, values):
+        if self._context.get('is_portal') == True:
+            values['sel_groups_1_9_10'] = 9
+        return super(UsesMarketer, self).create(values)

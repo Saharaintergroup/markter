@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import odoo.http as http
+import smtplib
+from random import randint
 from odoo.http import Response
 from odoo import SUPERUSER_ID
 import sys, json
@@ -11,7 +13,8 @@ from dateutil.relativedelta import relativedelta
 from odoo import models,fields,api,_
 from openerp import fields
 from passlib.context import CryptContext
-from passlib.context import CryptContext
+from odoo.exceptions import UserError
+from odoo.addons.auth_signup.models.res_users import SignupError
 class WebFormController(http.Controller):    
     
     default_crypt_contex = CryptContext(
@@ -24,80 +27,99 @@ class WebFormController(http.Controller):
     # algorithm but the default, but Ubuntu LTS only provides 1.5 so far.
     deprecated=['md5_crypt'],
     )
+    reset_password_data = []
 
+    @http.route('/web/reset_pasord', type='json', auth='public', website=True, csrf=False, sitemap=False)
+    def web_auth_reset_password(self, **kw):
+      data = {}
+      try:
+        login = kw.get('login')
+        request.env['res.users'].sudo().reset_password(login)
+        data['message'] = _("An email has been sent with credentials to reset your password")
+        data['result'] = "True"
+      except UserError as e:     
+        data['message'] = e.name or e.value
+        data['result'] = "False"
+      except SignupError:
+        data['message'] = _("Could not reset your password")
+        data['result'] = "False"
+      except Exception as e:
+        data['message'] = str(e)
+        data['result'] = "False"
+      return json.dumps(data)
 
-    def hash(password):
-        password = hashlib.md5()
-        password.hexdigest()
-        return password
-
-    @http.route('/check_login/<string:user_name>/<string:password>/<string:model>', type='http', auth='public', csrf=False)
-    def check_login(self,user_name,password,model,**args):
-        # default_crypt_contex = CryptContext(['pbkdf2_sha512', 'md5_crypt'],deprecated=['md5_crypt'],)
-        default_crypt_contex = CryptContext(['pbkdf2_sha512']).encrypt(password)
-        # get object 
-        target=request.env[model]
-        # check user name
-        user=target.search([('name','=',user_name),('password','=',password)])
-        result=False
-        if user:
-            result=True
-        return str(result)
-    
-    @http.route('/customer_login/<string:email>/<string:password>',type='http', auth='public', csrf=False)
-    def customer_login(self, email, password,**args):
-      
-      target=request.env['res.partner']
-      password = hash(hash)
+    @http.route(['/reset_pass_marketer'], redirect=None,auth="public",csrf=False,website=True,method='POST')
+    def reset_password(self, **kw):
+      model = kw.get('model')
+      email = kw.get('email')
+      target = request.env[model]
       user = target.search([
         ('email','=',email)
       ])
-      Success = "Success :"+str(user.password)
-      Failure = "Failure :"+ str(password)
+      result = ''       
       if user:
-        return Success
+        try:
+          n = 4
+          range_start = 10**(n-1)
+          range_end = (10**n)-1
+          context = randint(range_start, range_end)
+          mail = smtplib.SMTP('smtp.gmail.com',587)
+          mail.ehlo()
+          mail.starttls()
+          mail.login('mosabawad4949@gmail.com','1234567mm')
+          mail.sendmail('mosabawad4949@gmail.com',email,str(context))
+          mail.close()
+          result = str(context)
+        except Exception as identifier:
+          result = "Exception"
       else:
-        return Failure
+        result = "this emaill is not used in this application"
+      return result
 
-    @http.route('/marketer_orders/<int:user_id>/', type='http', auth='public', csrf=False)
-    def marketer_orders_details(self,user_id,**args):
-    	#orders
-
-
-        query='''select hr_employee_id from hr_employee_mk_mosque_rel where mk_mosque_id IN %(mosque)s'''
-
-        query=''' 
-				select 
-				  sale_order.name as order, 
-				  sale_order.partner_id as customer_id, 
-				  sale_order.state as order_state, 
-				  sale_order.date_order , 
-				  account_payment.state as payment_state, 
-				  sale_order.user_id as marketer, 
-				  account_payment.payment_type, 
-				  account_payment.amount, 
-				  res_partner.name as customer_name
-				from
-				  public.sale_order, 
-				  public.account_invoice, 
-				  public.account_payment, 
-				  public.res_partner
-				where 
-				  sale_order.name = account_invoice.origin AND
-				  sale_order.partner_id = res_partner.id AND
-				  account_invoice.reference = account_payment.communication
-				  And sale_order.user_id=%(marketer)s
-				 ;
-        '''
-
-
-
-        cr=request.env.cr
-        sup_ids=cr.execute(query,{'marketer':(user_id)})
-        sup = request.env.cr.dictfetchall()
-        for rec in sup:
-        	date=str(rec['date_order'])[:10]
-        	time=str(rec['date_order'])[10:]
-        	rec['date_order']=date
-        	rec['time_order']=time
-        return str(sup)
+    @http.route(['/new_password_marketer'], redirect=None,auth="public",csrf=False,website=True,method='POST')
+    def new_password_marketer(self, **kw):
+      model = kw.get('model')
+      email = kw.get('email')
+      password = kw.get('password')
+      target = request.env[model]
+      user = target.search([
+        ('email','=',email)
+      ])
+      result = ""
+      try:
+        if model == 'res.users':
+          user.write({
+            'password':password
+          })
+          result = "done"
+        elif model == 'res.partner':
+          user.write({
+            'gaith':password
+          })
+          result = "done"
+      except Exception as identifier:
+        result = "Exception"
+      return str(result)
+    
+    # @http.route('/set_new_password/<string:model>/<string:email>/<string:newPassword>')
+    # def set_new_password(self,model,email , newPassword, **args):
+    #   target = request.env[model]
+    #   user = target.search([
+    #     ('email','=',email)
+    #   ])
+    #   result = ""
+    #   try:
+    #     if model == 'res.users':
+    #       user.write({
+    #         'password':newPassword
+    #       })
+    #       result = "done"
+    #     elif model == 'res.partner':
+    #       user.write({
+    #         'gaith':newPassword
+    #       })
+    #       result = "done"
+    #   except Exception as identifier:
+    #     result = "Exception"
+    #   return str(result)
+    
