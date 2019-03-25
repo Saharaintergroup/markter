@@ -10,11 +10,12 @@
     'version': '1.0',
     'depends': [
         'base','sale'    
-        ],
+        ],   
 
     'data': [
-        'views/res_partner_view.xml',
         'views/partner_complain_view.xml',
+        'views/res_partner_view.xml',
+        'views/messaging.xml',
         'security/ir.model.access.csv'
     ],    
 }
