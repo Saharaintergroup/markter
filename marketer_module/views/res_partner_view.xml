@@ -85,6 +85,18 @@
             <field name="view_id" ref="base.view_users_tree"/>
             <field name="act_window_id" ref="res_users_marketer_id"/>
         </record>
+        <!--  this is the view of the picking -->
+        <record id="picking_modified_form_view" model="ir.ui.view">
+            <field name="name">EMPLOYEES</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <!-- dummy, will be modified by groups -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field  name="delivery_agent" required="1" domain="[('is_delivery','=','True')]"/>
+                </xpath>
+            </field>
+        </record>
         <!-- this is the menu -->
         <menuitem
               id="marketer_menu_id"
@@ -93,6 +105,51 @@
               parent="partner_complians_parent_menu"
               active="True"
             />
+
+        <!--delivery action-->
+        <record id="delivery_agent_action" model="ir.actions.act_window">
+			<field name="name">Delivery Agents</field>
+			<field name="res_model">res.users</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+            <field name="view_id" ref="base.view_users_form"/>
+            <field name="context">{'is_delivery':True}</field>
+		</record>
+        <!--delivery tree action-->
+        <record id="delivery_agent_tree_action" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="res_model">res.users</field>
+            <field name="view_id" ref="base.view_users_tree"/>
+            <field name="act_window_id" ref="delivery_agent_action"/>
+        </record>
+        <record id="delivery_agent_form_view" model="ir.ui.view">
+            <field name="name">Delivery Agents</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='access_rights']" position="after">
+                    <page name='Application Information'>
+                        <field name='is_delivery'/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        <record id="delivery_agent_form_action" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">form</field>
+            <field name="res_model">res.users</field>
+            <field name="view_id" ref="delivery_agent_form_view"/>
+            <field name="act_window_id" ref="delivery_agent_action"/>
+        </record>
+        <menuitem
+                id= 'delivery_agent_menu'
+                name= 'Delivery Agent'
+                action= 'delivery_agent_action'
+                parent= 'partner_complians_parent_menu'
+                active= 'True'
+        />
         
     </data>
 </odoo>

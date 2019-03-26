@@ -46,7 +46,11 @@ class WebFormController(http.Controller):
       except Exception as e:
         data['message'] = str(e)
         data['result'] = "False"
-      return json.dumps(data)
+      res = {
+        "message" : data['message'],
+        "status" :data['result']
+      }
+      return res
 
     @http.route(['/reset_pass_marketer'], redirect=None,auth="public",csrf=False,website=True,method='POST')
     def reset_password(self, **kw):
