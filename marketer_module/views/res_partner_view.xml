@@ -107,13 +107,25 @@
             />
 
         <!--delivery action-->
+        <record id="delivery_agent_form_view" model="ir.ui.view">
+            <field name="name">Delivery Agents</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='access_rights']" position="after">
+                    <page name='application_info' string='Application Information'>
+                        <field name='is_delivery'/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
         <record id="delivery_agent_action" model="ir.actions.act_window">
 			<field name="name">Delivery Agents</field>
 			<field name="res_model">res.users</field>
 			<field name="type">ir.actions.act_window</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-            <field name="view_id" ref="base.view_users_form"/>
+            <field name="view_id" ref="delivery_agent_form_view"/>
             <field name="context">{'is_delivery':True}</field>
 		</record>
         <!--delivery tree action-->
@@ -124,18 +136,7 @@
             <field name="view_id" ref="base.view_users_tree"/>
             <field name="act_window_id" ref="delivery_agent_action"/>
         </record>
-        <record id="delivery_agent_form_view" model="ir.ui.view">
-            <field name="name">Delivery Agents</field>
-            <field name="model">res.users</field>
-            <field name="inherit_id" ref="base.view_users_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//page[@name='access_rights']" position="after">
-                    <page name='Application Information'>
-                        <field name='is_delivery'/>
-                    </page>
-                </xpath>
-            </field>
-        </record>
+        
         <record id="delivery_agent_form_action" model="ir.actions.act_window.view">
             <field name="sequence" eval="0"/>
             <field name="view_mode">form</field>
