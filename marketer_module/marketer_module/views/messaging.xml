@@ -1,0 +1,115 @@
+<odoo>
+    <data>
+        <record id="messaging_form" model="ir.ui.view">
+			    <field name= "name">Messaging</field>
+			    <field name= "model">marketer.messages</field>
+			    <field name= "arch"  type="xml"> 
+			         <form >
+			             <sheet>
+			             	<group>
+			             		<group>
+			             			<field name="from_id"/>
+                                    <field name="date" readonly="1"/>
+									<!-- <field name="uuid"/> -->
+			             		</group>
+			             		<group>
+								 	<field name="to_id"/>
+			             			<field name="text"/>
+									<field name="seen" readonly="1"/>
+								</group>
+			             	</group>
+			             </sheet>
+			         </form>
+			    </field>
+			 </record>
+			 <record id="messaging_tree" model="ir.ui.view">
+			    <field name= "name">Messaging</field>
+			    <field name= "model">marketer.messages</field>
+			      <field name="arch" type="xml">
+			        <tree>
+			        	<field name="from_id"/>
+			        	<field name="to_id"/>
+				    </tree>
+			   </field>
+			 </record>
+			 <record id="messaging_action" model="ir.actions.act_window">
+				<field name="name">Messaging</field>
+				<field name="res_model">marketer.messages</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="view_type">form</field>
+				<field name="view_mode">tree,form</field>
+				<!--<field name="domain">[]</field>
+				<field name="context">{}</field>
+				<field name="search_view_id" ref="mk_contests_regulatoins_preparation_search_view"/> -->
+		    </record>
+
+		  <menuitem
+              id="messaging_menu"
+              name="Messaging"
+              parent="sale.sale_order_menu"
+              sequence="5"
+              active="True"
+              action="messaging_action"
+            /> 
+			<!-- channel views -->
+			<record id="channel_form" model="ir.ui.view">
+			    <field name= "name">Channels</field>
+			    <field name= "model">marketer.channel</field>
+			    <field name= "arch"  type="xml"> 
+			         <form >
+			             <sheet>
+			             	<group>
+			             		<group>
+			             			<field name="from_id"/>
+                                    <field name="to_id"/>
+			             		</group>
+								<group>
+									<field name="date" readonly="1"/>
+								</group>
+			             	</group>
+							<notebook>
+								<page string="Hospital Details">
+									<field name="messages_ids">
+										<tree editable="buttom" readonly="1">
+											<field name="from_id" readonly="1"/>
+											<field name="to_id" readonly="1"/>
+											<field name="date" readonly="1"/>
+										</tree>
+									</field>
+								</page>
+							</notebook>
+			             </sheet>
+			         </form>
+			    </field>
+			 </record>
+			 <record id="channel_tree" model="ir.ui.view">
+			    <field name= "name">Channels</field>
+			    <field name= "model">marketer.channel</field>
+			      <field name="arch" type="xml">
+			        <tree>
+			        	<field name="from_id"/>
+			        	<field name="to_id"/>
+				    </tree>
+			   </field>
+			 </record>
+			<record id="channel_action" model="ir.actions.act_window">
+				<field name="name">Channels</field>
+				<field name="res_model">marketer.channel</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="view_type">form</field>
+				<field name="view_mode">tree,form</field>
+				<!--<field name="domain">[]</field>
+				<field name="context">{}</field>
+				<field name="search_view_id" ref="mk_contests_regulatoins_preparation_search_view"/> -->
+		    </record>
+			<!-- channel view -->
+			 <menuitem
+              id="channels_menu"
+              name="Channels"
+              parent="sale.sale_order_menu"
+              sequence="6"
+              active="True"
+              action="channel_action"
+            />
+    </data>
+</odoo>
