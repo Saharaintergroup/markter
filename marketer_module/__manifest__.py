@@ -9,7 +9,7 @@
     'category': 'custom',
     'version': '1.0',
     'depends': [
-        'base','sale_management','stock'   
+        'base','sale','sale_management','stock'   
         ],   
 
     'data': [
